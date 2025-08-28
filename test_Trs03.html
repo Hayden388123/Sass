@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hover按鈕跳出alert</title>
+    <style>
+        .btn {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            width: 100px;
+            height: 30px;
+            border-radius: 5px;
+            background-color: #2a93ef;
+            color: #fff;
+            cursor: pointer;
+            user-select: none;
+            text-align: center;
+            line-height: 30px;
+            transition: all 0.2s;
+            overflow: hidden;
+
+            .bg {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 50%;
+                width: 0%;
+                height: 100%;
+                background-color: #0436c2;
+                transition: all 0.2s;
+            }
+
+            .text {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            &:hover {
+                width: 130px;
+                height: 40px;
+                line-height: 40px;
+
+                .bg {
+                    width: 100%;
+                    transition: all 1s;
+                }
+            }
+        }
+
+        .info {
+            position: absolute;
+            left: -1000px;
+            top: 0;
+            padding: 5px;
+            background-color: #f77070;
+            border-radius: 5px;
+            opacity: 1;
+            transform: translateY(-14px);
+            transition: opacity .2s 0.3s, transform .2s;
+            pointer-events: none;
+            white-space: nowrap;
+
+            &::after {
+                position: absolute;
+                left: 5px;
+                bottom: -2;
+                z-index: -1;
+                content: "";
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 30px 10px 0 10px;
+                border-color: #f77070 transparent transparent transparent;
+                transition: bottom 0.2s;
+            }
+
+            &.active {
+                opacity: 1;
+                transform: translateY(14px);
+                transition: opacity .2s, transform .2s 0.3s;
+
+                &::after {
+                    transition: bottom 0.2s 0.5s;
+                    bottom: -15px;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="btn" data-hover="我有冰淇淋">
+        <div class="bg"></div>
+        <div class="text">按鈕</div>
+    </div>
+    <div class="info">123</div>
+    <script>
+        const btn = document.querySelector('.btn');
+        const bg = document.querySelector('.bg');
+        const info = document.querySelector('.info');
+        let x, y;
+
+        btn.addEventListener('mouseenter', () => {
+            console.log(btn.offsetLeft, btn.offsetTop);
+            x = btn.offsetLeft;
+            y = btn.offsetTop - 50;
+            // playing: 給 bg transitionend 判斷要不要做動作用的
+            bg.classList.add("palying");
+            info.textContent = btn.dataset.hover;
+        })
+        btn.addEventListener("mouseleave", () => {
+            bg.classList.remove("playing");
+        });
+
+        btn.addEventListener('transitionend', (e) => {
+            console.log(e.target.matches(':hover'));
+            if (e.target.matches(':hover')) {
+                console.log('滑鼠移入');
+            } else {
+                console.log('滑鼠移出');
+            }
+            if (e.propertyName == 'width' && e.target.className == 'bg') {
+                console.log('ˇ動畫撥放結束');
+                console.log('動畫控制的屬性:' + e.propertyName);
+                console.log(e.target);
+            }
+        })
+
+        bg.addEventListener('transitionstart', (e) => {
+            info.style.left = `${x}px`;
+            info.style.top = `${y}px`;
+            //如果使用className.add這個方法，會把原本info的class裡面的東西覆蓋掉
+            info.classList.add('active');
+        })
+
+        bg.addEventListener('transitionend', (e) => {
+            //info移除active
+            if (!bg.matches(".playing")) {
+                info.classList.remove('active');
+            }
+        })
+
+        info.addEventListener('transitionend', (e) => {
+            //移回左邊看不見的地方
+            if (!info.matches('.active')) {
+                info.textContent = "";
+                info.style.left = -1000 + "px";
+                info.style.top = `${-1000}px`;
+            }
+        })
+    </script>
+</body>
+
+</html>
