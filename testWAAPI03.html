@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAPPI03</title>
+    <style>
+        .box {
+            position: relative;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background-color: #873eda;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box"></div>
+    <div class="box"></div>
+
+    <script>
+        const box = document.querySelectorAll('.box');
+        // 像CSS的keyframs但不能指定百分比
+        const keyframs = [
+            {
+                left: 0
+            },
+            {
+                left: 'calc(100% - 100px)'
+            },
+            {
+                left: 0
+            }];
+
+        const options = {
+            duration: 2000,
+            iterations: 1
+        };
+
+        const ani1 = box[0].animate(keyframs, options);
+
+        ani1.addEventListener('finish', () => {
+            box[1].animate(keyframs, options);
+        });
+
+    </script>
+</body>
+
+</html>
