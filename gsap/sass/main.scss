@@ -1,0 +1,7 @@
+@use "variables" as v;
+@use "hayden" as hayden;
+@use "tracy" as tracy;
+
+body {
+    color: hayden.$main-color;
+}

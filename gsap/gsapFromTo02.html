@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsap.fromTo-02</title>
+    <style>
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: #137d85;
+        }
+
+        .dot {
+            position: absolute;
+            left: 200px;
+            top: 200px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #0c3633;
+        }
+
+        .dot::before {
+            display: inline-block;
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            content: "";
+            width: 40px;
+            height: 40px;
+            outline: 5px solid rgb(28, 140, 168);
+            transform-origin: center center;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            animation-name: ani01;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+            z-index: 1;
+            animation-duration: 0.5s;
+        }
+
+        @keyframes ani01 {
+            0% {
+                width: 0px;
+                height: 0px;
+                opacity: 1;
+            }
+
+            60% {
+                width: 30px;
+                height: 30px;
+                opacity: 1;
+            }
+
+            100% {
+                width: 40px;
+                height: 40px;
+                opacity: 0;
+            }
+        }
+
+        .dot::after {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            content: "";
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            outline: 3px solid #6e1888;
+            transform-origin: center center;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            animation-name: ani01;
+            animation-duration: 1s;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box"></div>
+    <!-- <div class="dot"></div> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script>
+        let ary = [];
+
+        window.addEventListener("click", (e) => {
+            if (ary.length < 2) { // 記錄用的陣列, 只有在長度小於2的情況下, 才能記錄
+                ary.push([e.pageX, e.pageY]); // 記錄
+                setDot(e); // 畫紅點
+                if (ary.length == 2) { // 如果記錄長度剛好是2
+                    setTimeout(() => {
+                        gsap.fromTo(".box", { // 要跑動畫
+                            x: ary[0][0] - 50, // 第一個點的X
+                            y: ary[0][1] - 50 // 第一個點的Y
+                        }, {
+                            x: ary[1][0] - 50,
+                            y: ary[1][1] - 50,
+                            duration: 1,
+                            onComplete: () => { // 當動畫播完時
+                                ary = []; // 清空記錄
+                            },
+                            delay: 1
+                        });
+                    }, 1000); // 一次性的記時器, 在一秒後, 才把box放到初始位置
+
+
+                }
+            }
+        });
+
+        function setDot(e) {
+            const dot = document.createElement("div");
+            dot.classList.add("dot");
+            dot.style.left = `${e.pageX - 15}px`;
+            dot.style.top = `${e.pageY - 15}px`;
+            dot.addEventListener("animationend", (e) => { // 動畫播完時
+                if (e.pseudoElement == "::after") { // 從事件參數取得在哪個偽元素觸發
+                    e.target.remove(); // 移除事件觸發的元素
+                };
+
+            });
+            document.body.append(dot);
+        }
+    </script>
+</body>
+
+</html>

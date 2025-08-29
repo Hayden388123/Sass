@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsap.fromTo-01</title>
+    <style>
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: #137d85;
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script>
+        requestIdleCallback(() => {
+            gsap.fromTo('.box', {
+                x: 500,
+                opacity: 1,
+            }, {
+                x: 300,  // 字串或數字都可, 會自動轉。但+100這樣的表現要放字串中
+                y: 200,
+                opacity: 1,
+                duration: 1
+            })
+        })
+    </script>
+</body>
+
+</html>
